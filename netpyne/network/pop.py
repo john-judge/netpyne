@@ -638,21 +638,14 @@ class Pop(object):
                 ix += nseg
                 h.pop_section()
 
-            if len(cells)==1:
-                self._morphSegCoords['p0'] = p0
-                self._morphSegCoords['p1'] = p1
+            print("adding morphSegCoords for label %s" % label)
+            self._morphSegCoords[label] = {} 
 
-                self._morphSegCoords['d0'] = d0
-                self._morphSegCoords['d1'] = d1
+            self._morphSegCoords[label]['p0'] = p0
+            self._morphSegCoords[label]['p1'] = p1
 
-            else:  # diversity
-                self._morphSegCoords[label] = {} 
-
-                self._morphSegCoords[label]['p0'] = p0
-                self._morphSegCoords[label]['p1'] = p1
-
-                self._morphSegCoords[label]['d0'] = d0
-                self._morphSegCoords[label]['d1'] = d1
+            self._morphSegCoords[label]['d0'] = d0
+            self._morphSegCoords[label]['d1'] = d1
 
 
         #print(self._morphSegCoords)
