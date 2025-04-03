@@ -1822,7 +1822,7 @@ If this cell is expected to be a point cell instead, make sure the correspondent
         if hasattr(sim.net.pops[pop], '_morphSegCoords'):
 
             # check whether there is a single cell per pop or multiple subpopulations (diversity)
-            if 'diversity' not in sim.net.pops[pop].tags.keys():
+            if 'diversity' not in sim.net.pops[pop].tags.keys() or 'label' not in self.tags.keys():
                 # rotated coordinates around z axis first then shift relative to the soma
                 morphSegCoords = sim.net.pops[pop]._morphSegCoords
             else:
