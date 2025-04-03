@@ -1429,20 +1429,22 @@ If this cell is expected to be a point cell instead, make sure the correspondent
                             #self.secs[secLabel]['geom']['rel_05'].append(rel_05[:,nseg])
                             #self.secs[secLabel]['geom']['tr'].append(tr[nseg])
 
-                            vec = [val*tr[nseg]*(1e6) for val in params['stim']]
-                            hStim = h.Vector(vec)  # add stim object to dict in stims list
+                            if nseg < len(tr):
 
-                            self.stims.append(Dict(params))  # add to python structure
-                            self.stims[-1]['sec_xtra'] = secLabel
-                            self.stims[-1]['seg_xtra'] = ns
-                            self.stims[-1]['hObj'] = hStim
+                                vec = [val*tr[nseg]*(1e6) for val in params['stim']]
+                                hStim = h.Vector(vec)  # add stim object to dict in stims list
 
-                            self.secs[secLabel]['geom']['xtra_stim'].append({})
-                            self.secs[secLabel]['geom']['xtra_stim'][ns].update({'vec' : vec, 
-                                                                                 'stim_index': len(self.stims)-1})
+                                self.stims.append(Dict(params))  # add to python structure
+                                self.stims[-1]['sec_xtra'] = secLabel
+                                self.stims[-1]['seg_xtra'] = ns
+                                self.stims[-1]['hObj'] = hStim
 
-                            self.hvec.append(hStim)
-                            self.hvec[nseg].play(seg._ref_e_extracellular, params['time'],1)
+                                self.secs[secLabel]['geom']['xtra_stim'].append({})
+                                self.secs[secLabel]['geom']['xtra_stim'][ns].update({'vec' : vec, 
+                                                                                    'stim_index': len(self.stims)-1})
+
+                                self.hvec.append(hStim)
+                                self.hvec[nseg].play(seg._ref_e_extracellular, params['time'],1)
 
                         nseg += 1
 
@@ -1822,12 +1824,15 @@ If this cell is expected to be a point cell instead, make sure the correspondent
         if hasattr(sim.net.pops[pop], '_morphSegCoords'):
 
             # check whether there is a single cell per pop or multiple subpopulations (diversity)
-            if 'diversity' not in sim.net.pops[pop].tags.keys() or 'label' not in self.tags.keys():
+            if 'diversity' not in sim.net.pops[pop].tags.keys():
                 # rotated coordinates around z axis first then shift relative to the soma
                 morphSegCoords = sim.net.pops[pop]._morphSegCoords
             else:
-                label = self.tags['label'][0]
-                morphSegCoords = sim.net.pops[pop]._morphSegCoords[label]
+                if 'label' not in self.tags.keys():
+                    morphSegCoords = sim.net.pops[pop]._morphSegCoords
+                else:
+                    label = self.tags['label'][0]
+                    morphSegCoords = sim.net.pops[pop]._morphSegCoords[label]
 
             self._segCoords['p0'] = p3dsoma + morphSegCoords['p0']
             self._segCoords['p1'] = p3dsoma + morphSegCoords['p1']
