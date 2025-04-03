@@ -569,7 +569,7 @@ class Pop(object):
             cells = []
             cellLabels_Ids = {}
             # consider diversity
-            if True: #'diversity' not in self.tags.keys():
+            if 'diversity' not in self.tags.keys():
                 label = ['no_diversity']
                 cellLabels_Ids.update({label[0]: localPopGids})
                 cells.append(sim.net.cells[sim.net.gid2lid[localPopGids[0]]])              # single cell per pop
