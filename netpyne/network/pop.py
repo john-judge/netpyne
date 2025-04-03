@@ -569,20 +569,27 @@ class Pop(object):
             cells = []
             cellLabels_Ids = {}
             # consider diversity
-            if True: #'diversity' not in self.tags.keys():
+            if 'diversity' not in self.tags.keys():
                 label = ['no_diversity']
                 cellLabels_Ids.update({label[0]: localPopGids})
                 cells.append(sim.net.cells[sim.net.gid2lid[localPopGids[0]]])              # single cell per pop
             else:
                 # enumerate the different cell labels (corresponding to the different cell variants)
                 for nn in localPopGids:
-                    for label in sim.net.cells[sim.net.gid2lid[nn]].tags['label']:
-                        if label not in cellLabels_Ids.keys():
-                            cellLabels_Ids.update({label:[]})
-                        cellLabels_Ids[label].append(nn)
+                    if 'label' in sim.net.cells[sim.net.gid2lid[nn]].tags.keys():
+                        for label in sim.net.cells[sim.net.gid2lid[nn]].tags['label']:
+                            if label not in cellLabels_Ids.keys():
+                                cellLabels_Ids.update({label:[]})
+                            cellLabels_Ids[label].append(nn)
                 # obtain cells with these cell rules (one per subpopulation)
                 for label in cellLabels_Ids.keys():
                     cells.append(sim.net.cells[sim.net.gid2lid[cellLabels_Ids[label][0]]])
+
+                # if cells is empty, add one cell per population
+                if len(cells) == 0:
+                    label = ['no_diversity']
+                    cellLabels_Ids.update({label[0]: localPopGids})
+                    cells.append(sim.net.cells[sim.net.gid2lid[localPopGids[0]]]) 
         else:
             return -1
 
