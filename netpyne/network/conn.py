@@ -178,7 +178,7 @@ def _findPrePostCellsCondition(self, allCellTags, preConds, postConds, debug=Fal
     postCellsTags = None
 
     if debug:
-        print('  Finding pre and post cells matching conditions: %s, %s' % (preConds, postConds))
+        print('  Finding pre and post cells matching conditions: pre: %s, post: %s' % (preConds, postConds))
 
     for condKey, condValue in preConds.items():  # Find subset of cells that match presyn criteria
         if condKey in ['x', 'y', 'z', 'xnorm', 'ynorm', 'znorm']:
@@ -190,7 +190,7 @@ def _findPrePostCellsCondition(self, allCellTags, preConds, postConds, debug=Fal
         else:
             if debug:
                 print(' Pre condition %s: %s' % (condKey, condValue))
-                for gid, tags in list(preCellsTags.items())[:10]:
+                for gid, tags in list(preCellsTags.items()):
                     if condKey in tags:
                         print(condKey, "compare for match:", tags[condKey], "\n\tin gid", gid)
                         if tags.get(condKey, None) == condValue or (
@@ -236,10 +236,6 @@ def _findPrePostCellsCondition(self, allCellTags, preConds, postConds, debug=Fal
             '  Found %d pre cells and %d post cells'
             % (len(preCellsTags), len(pct))
         )
-
-        # print the tags of the first 5 pre and post cells
-        print('  Pre cells tags: %s' % (list(preCellsTags.items())[:5]))
-        print('  Post cells tags: %s' % (list(postCellsTags.items())[:5]))
 
     return preCellsTags, postCellsTags
 
