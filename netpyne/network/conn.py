@@ -31,6 +31,8 @@ def connectCells(self):
 
     from .. import sim
 
+    debug = sim.cfg.debug
+
     # Instantiate network connections based on the connectivity rules defined in params
     sim.timing('start', 'connectTime')
     if sim.rank == 0:
@@ -56,9 +58,23 @@ def connectCells(self):
         connParam = connParamTemp.copy()
         connParam['label'] = connParamLabel
 
+        if debug:
+            print(
+                '  Processing connection rule %s (preConds: %s, postConds: %s, connFunc: %s, probability: %s, convergence: %s, divergence: %s)'
+                % (
+                    connParamLabel,
+                    connParam['preConds'],
+                    connParam['postConds'],
+                    connParam.get('connFunc', 'fullConn'),
+                    connParam.get('probability', None),
+                    connParam.get('convergence', None),
+                    connParam.get('divergence', None),
+                )
+            )
+
         # find pre and post cells that match conditions
         preCellsTags, postCellsTags = self._findPrePostCellsCondition(
-            allCellTags, connParam['preConds'], connParam['postConds']
+            allCellTags, connParam['preConds'], connParam['postConds'], debug=debug
         )
 
         # if conn function not specified, select based on params
@@ -153,11 +169,14 @@ def connectCells(self):
 # -----------------------------------------------------------------------------
 # Find pre and post cells matching conditions
 # -----------------------------------------------------------------------------
-def _findPrePostCellsCondition(self, allCellTags, preConds, postConds):
+def _findPrePostCellsCondition(self, allCellTags, preConds, postConds, debug=False):
 
     # try:
     preCellsTags = dict(allCellTags)  # initialize with all presyn cells (make copy)
     postCellsTags = None
+
+    if debug:
+        print('  Finding pre and post cells matching conditions: %s, %s' % (preConds, postConds))
 
     for condKey, condValue in preConds.items():  # Find subset of cells that match presyn criteria
         if condKey in ['x', 'y', 'z', 'xnorm', 'ynorm', 'znorm']:
@@ -195,6 +214,16 @@ def _findPrePostCellsCondition(self, allCellTags, preConds, postConds):
                 }  # dict with post Cell objects
     # except:
     #   return None, None
+
+    if debug:
+        print(
+            '  Found %d pre cells and %d post cells'
+            % (len(preCellsTags), len(postCellsTags))
+        )
+
+        # print the tags of the first 5 pre and post cells
+        print('  Pre cells tags: %s' % (list(preCellsTags.items())[:5]))
+        print('  Post cells tags: %s' % (list(postCellsTags.items())[:5]))
 
     return preCellsTags, postCellsTags
 
