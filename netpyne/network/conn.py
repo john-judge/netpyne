@@ -188,6 +188,10 @@ def _findPrePostCellsCondition(self, allCellTags, preConds, postConds, debug=Fal
                 if condValue[0] <= tags.get(condKey, None) < condValue[1]
             }  # dict with pre cell tags
         else:
+            if debug:
+                print('  Pre condition %s: %s' % (condKey, condValue))
+                print(" searching for matches in preCellsTags: %s" % list(preCellsTags.items()))
+            
             if isinstance(condValue, list):
                 preCellsTags = {
                     gid: tags for (gid, tags) in preCellsTags.items() if tags.get(condKey, None) in condValue
@@ -218,9 +222,13 @@ def _findPrePostCellsCondition(self, allCellTags, preConds, postConds, debug=Fal
     #   return None, None
 
     if debug:
+        pct = postCellsTags
+        if postCellsTags is None:
+            pct = []
+
         print(
             '  Found %d pre cells and %d post cells'
-            % (len(preCellsTags), len(postCellsTags))
+            % (len(preCellsTags), len(pct))
         )
 
         # print the tags of the first 5 pre and post cells
