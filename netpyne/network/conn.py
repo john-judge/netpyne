@@ -16,7 +16,7 @@ from tqdm import tqdm
 # -----------------------------------------------------------------------------
 # Connect Cells
 # -----------------------------------------------------------------------------
-def connectCells(self):
+def connectCells(self, debug=True):
     """
     Function for/to <short description of `netpyne.network.conn.connectCells`>
 
@@ -53,6 +53,8 @@ def connectCells(self):
         sim.cfg.addSynMechs = False
 
     hasPointerConns = self.params.synMechParams.hasPointerConns()
+
+    print("Number of connParams: %d" % len(self.params.connParams))
 
     for connParamLabel, connParamTemp in self.params.connParams.items():  # for each conn rule or parameter set
         connParam = connParamTemp.copy()
