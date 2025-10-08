@@ -101,6 +101,7 @@ def optunaOptim(batch, pc):
     sleep(rank)  # each process wiats a different time to avoid saturating sqlite database
     study = None
     if 'directions' in args:
+        print("Creating multi-objective stuydy with directions:", args['directions'])
         study = optuna.create_study(
             study_name=batch.batchLabel,
             storage='sqlite:///%s/%s_storage.db' % (batch.saveFolder, batch.batchLabel),
