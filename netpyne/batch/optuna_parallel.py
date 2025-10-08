@@ -80,6 +80,9 @@ def optunaOptim(batch, pc):
     args['maxFitness'] = batch.optimCfg.get('maxFitness', 1000)
     args['direction'] = batch.optimCfg.get('direction', 'minimize')
 
+    if 'directions' in batch.optimCfg:
+        args['directions'] = batch.optimCfg['directions']
+
     for key, value in batch.optimCfg.items():
         args[key] = value
 
@@ -96,12 +99,21 @@ def optunaOptim(batch, pc):
     # -------------------------------------------------------------------------------
 
     sleep(rank)  # each process wiats a different time to avoid saturating sqlite database
-    study = optuna.create_study(
-        study_name=batch.batchLabel,
-        storage='sqlite:///%s/%s_storage.db' % (batch.saveFolder, batch.batchLabel),
-        load_if_exists=True,
-        direction=args['direction'],
-    )
+    study = None
+    if 'directions' in args:
+        study = optuna.create_study(
+            study_name=batch.batchLabel,
+            storage='sqlite:///%s/%s_storage.db' % (batch.saveFolder, batch.batchLabel),
+            load_if_exists=True,
+            directions=args['directions'],
+        )
+    else:
+        study = optuna.create_study(
+            study_name=batch.batchLabel,
+            storage='sqlite:///%s/%s_storage.db' % (batch.saveFolder, batch.batchLabel),
+            load_if_exists=True,
+            direction=args['direction'],
+        )
     # params
     paramLabels = args.get('paramLabels', [])
     minVals = args.get('minVals', [])
